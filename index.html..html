@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wellnes5 エンジニア診断 | BEEP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#0e0e0e;--gray-70:#444;--gray-60:#555;--gray-40:#888;
+  --gray-20:#ccc;--gray-10:#e8e8e8;--gray-05:#f5f5f5;--white:#fff;
+  --accent:#1a7a5e;--accent-lt:#e8f3f0;--accent-dark:#0f5040;
+  --warn:#a07000;--danger:#8b2020;
+  --font-en:'DM Sans',sans-serif;--font-jp:'Noto Sans JP',sans-serif;
+}
+html{font-size:16px;scroll-behavior:smooth}
+body{background:var(--white);color:var(--black);font-family:var(--font-jp);-webkit-font-smoothing:antialiased;line-height:1}
+.page-wrap{max-width:760px;margin:0 auto;padding:0 28px}
+
+/* ── Header ── */
+.site-header{border-bottom:1px solid var(--gray-10);padding:18px 0;position:sticky;top:0;background:var(--white);z-index:100}
+.site-header .inner{max-width:760px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:var(--font-en);font-size:14px;font-weight:500;letter-spacing:.14em;color:var(--black);text-decoration:none}
+.logo span{color:var(--accent)}
+.header-label{font-size:10px;letter-spacing:.12em;color:var(--gray-40);text-transform:uppercase;font-family:var(--font-en)}
+
+/* ── Hero ── */
+.hero{padding:56px 0 44px;border-bottom:1px solid var(--gray-10)}
+.hero-kicker{font-family:var(--font-en);font-size:10px;letter-spacing:.18em;color:var(--accent);text-transform:uppercase;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.hero-kicker::before{content:'';width:18px;height:1px;background:var(--accent)}
+.hero h1{font-size:clamp(20px,4vw,30px);font-weight:300;line-height:1.65;color:var(--black);margin-bottom:18px;letter-spacing:.02em}
+.hero h1 strong{font-weight:500}
+.hero-sub{font-size:13px;color:var(--gray-60);line-height:2;max-width:480px;font-weight:300}
+.hero-meta{margin-top:28px;display:flex;gap:28px}
+.meta-item{display:flex;flex-direction:column;gap:3px}
+.meta-num{font-family:var(--font-en);font-size:20px;font-weight:300;color:var(--black);letter-spacing:-.02em}
+.meta-label{font-size:10px;color:var(--gray-40);letter-spacing:.06em;font-family:var(--font-en)}
+
+/* ── Progress ── */
+.progress-track{height:1px;background:var(--gray-10);position:relative}
+.progress-fill{position:absolute;left:0;top:0;height:100%;background:var(--accent);transition:width .5s cubic-bezier(.4,0,.2,1);width:0%}
+.progress-label{max-width:760px;margin:0 auto;padding:10px 28px;display:flex;justify-content:space-between;align-items:center}
+.prog-text{font-family:var(--font-en);font-size:10px;color:var(--gray-40);letter-spacing:.1em}
+
+/* ── Main ── */
+.main{padding:48px 0 100px;min-height:60vh}
+.step{display:none}
+.step.active{display:block;animation:fadeUp .3s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Start ── */
+.section-eyebrow{font-family:var(--font-en);font-size:10px;letter-spacing:.18em;color:var(--gray-40);text-transform:uppercase;margin-bottom:28px}
+.dimensions{display:grid;grid-template-columns:repeat(5,1fr);gap:1px;background:var(--gray-10);border:1px solid var(--gray-10);margin-bottom:40px}
+.dim-item{background:var(--white);padding:18px 16px}
+.dim-num{font-family:var(--font-en);font-size:10px;color:var(--gray-40);letter-spacing:.1em;margin-bottom:8px}
+.dim-name-en{font-family:var(--font-en);font-size:12px;font-weight:500;color:var(--black);margin-bottom:3px;letter-spacing:.03em}
+.dim-name-jp{font-size:11px;color:var(--gray-60);margin-bottom:8px;font-weight:300}
+.dim-qs{font-size:10px;color:var(--gray-40);font-family:var(--font-en);letter-spacing:.05em}
+.start-note{font-size:12px;color:var(--gray-60);line-height:1.9;font-weight:300;margin-bottom:32px;padding:16px 20px;border-left:2px solid var(--gray-10);background:var(--gray-05)}
+.btn-start{display:inline-flex;align-items:center;gap:14px;background:var(--black);color:var(--white);border:none;padding:16px 36px;font-family:var(--font-jp);font-size:14px;font-weight:400;letter-spacing:.06em;cursor:pointer;transition:background .2s}
+.btn-start:hover{background:var(--accent-dark)}
+.arrow{font-family:var(--font-en);font-size:15px;font-weight:300;transition:transform .2s}
+.btn-start:hover .arrow{transform:translateX(5px)}
+
+/* ── Question ── */
+.q-header{margin-bottom:36px}
+.q-axis-tag{display:inline-block;font-family:var(--font-en);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;border:1px solid var(--accent);padding:4px 10px;margin-bottom:16px}
+.q-text{font-size:clamp(17px,2.8vw,21px);font-weight:300;line-height:1.75;color:var(--black);letter-spacing:.01em;margin-bottom:10px}
+.q-note{font-size:11px;color:var(--gray-40);line-height:1.9;font-weight:300;padding-left:12px;border-left:1px solid var(--gray-20)}
+.q-counter{font-family:var(--font-en);font-size:10px;color:var(--gray-40);letter-spacing:.12em;margin-bottom:32px}
+
+.choices{display:flex;flex-direction:column;gap:1px;background:var(--gray-10);border:1px solid var(--gray-10)}
+.choice{display:grid;grid-template-columns:16px 1fr;align-items:center;gap:14px;background:var(--white);padding:16px 20px;cursor:pointer;border:none;text-align:left;width:100%;transition:background .12s;font-family:var(--font-jp)}
+.choice:hover{background:var(--gray-05)}
+.choice.selected{background:var(--accent-lt)}
+.choice-dot{width:10px;height:10px;border:1px solid var(--gray-20);border-radius:50%;flex-shrink:0;transition:all .12s}
+.choice.selected .choice-dot{background:var(--accent);border-color:var(--accent)}
+.choice-text{font-size:14px;color:var(--black);font-weight:400;letter-spacing:.02em}
+.choice-pt{display:none}
+.choice.selected .choice-pt{color:var(--accent)}
+
+.q-nav{display:flex;align-items:center;justify-content:space-between;margin-top:36px;padding-top:28px;border-top:1px solid var(--gray-10)}
+.btn-back{font-size:12px;color:var(--gray-40);background:none;border:none;cursor:pointer;letter-spacing:.05em;font-family:var(--font-jp);padding:0;transition:color .15s}
+.btn-back:hover{color:var(--black)}
+.btn-next{display:inline-flex;align-items:center;gap:10px;background:var(--black);color:var(--white);border:none;padding:14px 28px;font-family:var(--font-jp);font-size:13px;letter-spacing:.06em;cursor:pointer;transition:background .2s,opacity .2s}
+.btn-next:disabled{opacity:.25;cursor:not-allowed}
+.btn-next:not(:disabled):hover{background:var(--accent-dark)}
+
+/* ── Result ── */
+.result-top{display:grid;grid-template-columns:1fr 320px;gap:48px;align-items:start;padding:40px 0 40px;border-bottom:1px solid var(--gray-10);margin-bottom:48px}
+.result-left{}
+.result-tier-kicker{font-family:var(--font-en);font-size:10px;letter-spacing:.15em;color:var(--gray-40);text-transform:uppercase;margin-bottom:14px}
+.result-score-wrap{display:flex;align-items:baseline;gap:10px;margin-bottom:16px}
+.result-score-big{font-family:var(--font-en);font-size:72px;font-weight:300;line-height:1;letter-spacing:-.04em}
+.result-score-big.green{color:var(--accent)}
+.result-score-big.yellow{color:var(--warn)}
+.result-score-big.red{color:var(--danger)}
+.result-score-denom{font-family:var(--font-en);font-size:20px;font-weight:300;color:var(--gray-40)}
+.result-status{font-family:var(--font-en);font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
+.result-status.green{color:var(--accent)}
+.result-status.yellow{color:var(--warn)}
+.result-status.red{color:var(--danger)}
+.result-title{font-size:clamp(16px,2.4vw,20px);font-weight:300;line-height:1.65;color:var(--black);margin-bottom:14px;letter-spacing:.01em}
+.result-desc{font-size:13px;color:var(--gray-60);line-height:1.95;font-weight:300}
+
+/* ── Radar chart ── */
+.radar-wrap{display:flex;flex-direction:column;align-items:center}
+.radar-title{font-family:var(--font-en);font-size:10px;letter-spacing:.14em;color:var(--gray-40);text-transform:uppercase;margin-bottom:16px}
+#radarCanvas{display:block}
+
+/* ── Breakdown ── */
+.breakdown-section{margin-bottom:48px}
+.section-label{font-family:var(--font-en);font-size:10px;letter-spacing:.18em;color:var(--gray-40);text-transform:uppercase;margin-bottom:20px}
+.breakdown{display:flex;flex-direction:column;gap:1px;background:var(--gray-10);border:1px solid var(--gray-10)}
+.bd-row{display:grid;grid-template-columns:110px 1fr 52px;align-items:center;gap:16px;background:var(--white);padding:12px 18px}
+.bd-axis{font-family:var(--font-en);font-size:11px;color:var(--black);font-weight:500;letter-spacing:.04em}
+.bd-bar-bg{height:2px;background:var(--gray-10);position:relative;border-radius:1px}
+.bd-bar-fill{position:absolute;left:0;top:0;height:2px;border-radius:1px;transition:width .9s cubic-bezier(.4,0,.2,1)}
+.bd-score-text{font-family:var(--font-en);font-size:12px;text-align:right;font-weight:400}
+.bd-score-text.low{color:var(--danger)}
+.bd-score-text.mid{color:var(--warn)}
+.bd-score-text.ok{color:var(--accent)}
+
+/* ── Per-question breakdown ── */
+.q-breakdown{margin-bottom:48px}
+.qb-axis-block{margin-bottom:28px;border:1px solid var(--gray-10)}
+.qb-axis-header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--gray-05);border-bottom:1px solid var(--gray-10)}
+.qb-axis-name{font-family:var(--font-en);font-size:11px;font-weight:500;color:var(--black);letter-spacing:.06em}
+.qb-axis-score{font-family:var(--font-en);font-size:11px;color:var(--gray-40);letter-spacing:.06em}
+.qb-q-row{display:grid;grid-template-columns:1fr 80px;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-10);align-items:center}
+.qb-q-row:last-child{border-bottom:none}
+.qb-q-text{font-size:12px;color:var(--gray-60);line-height:1.7;font-weight:300}
+.qb-q-ans{font-size:12px;color:var(--black);text-align:right;font-weight:400;white-space:nowrap}
+.qb-q-ans.s1{color:var(--danger)}
+.qb-q-ans.s2{color:var(--warn)}
+.qb-q-ans.s3{color:var(--accent)}
+
+/* ── Advice ── */
+.advice-block{border-left:2px solid var(--accent);padding:20px 22px;background:var(--gray-05);margin-bottom:52px}
+.advice-kicker{font-family:var(--font-en);font-size:10px;letter-spacing:.14em;color:var(--accent);text-transform:uppercase;margin-bottom:10px}
+.advice-text{font-size:13px;color:var(--gray-60);line-height:2;font-weight:300}
+
+/* ── CTA ── */
+.cta-block{border:1px solid var(--gray-10);padding:36px;background:var(--white)}
+.cta-eyebrow{font-family:var(--font-en);font-size:10px;letter-spacing:.16em;color:var(--accent);text-transform:uppercase;margin-bottom:14px}
+.cta-heading{font-size:clamp(18px,2.8vw,24px);font-weight:300;line-height:1.6;color:var(--black);margin-bottom:12px;letter-spacing:.01em}
+.cta-heading strong{font-weight:500}
+.cta-body{font-size:13px;color:var(--gray-60);line-height:2;font-weight:300;margin-bottom:28px;max-width:520px}
+.cta-points{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--gray-10);border:1px solid var(--gray-10);margin-bottom:28px}
+.cta-point{background:var(--white);padding:14px 16px}
+.cta-point-label{font-family:var(--font-en);font-size:10px;color:var(--accent);letter-spacing:.1em;text-transform:uppercase;margin-bottom:5px}
+.cta-point-text{font-size:12px;color:var(--gray-60);line-height:1.7;font-weight:300}
+.btn-cta{display:inline-flex;align-items:center;gap:12px;background:var(--accent);color:var(--white);text-decoration:none;padding:15px 28px;font-size:13px;letter-spacing:.06em;font-family:var(--font-jp);transition:background .2s;border:none;cursor:pointer}
+.btn-cta:hover{background:var(--accent-dark)}
+.btn-cta-sub{font-size:12px;color:var(--gray-40);margin-top:12px;font-weight:300}
+.btn-cta-sub a{color:var(--accent);text-decoration:none}
+.btn-cta-sub a:hover{text-decoration:underline}
+
+.btn-retry{display:inline-flex;align-items:center;gap:8px;background:none;border:1px solid var(--gray-20);color:var(--gray-60);padding:11px 18px;font-size:11px;letter-spacing:.06em;cursor:pointer;margin-top:24px;font-family:var(--font-jp);transition:border-color .2s,color .2s}
+.btn-retry:hover{border-color:var(--black);color:var(--black)}
+
+/* ── Footer ── */
+.site-footer{border-top:1px solid var(--gray-10);padding:22px 0}
+.site-footer .inner{max-width:760px;margin:0 auto;padding:0 28px;display:flex;align-items:center;justify-content:space-between}
+.footer-copy{font-size:10px;color:var(--gray-40);font-family:var(--font-en);letter-spacing:.06em}
+.footer-link{font-size:10px;color:var(--gray-40);text-decoration:none;letter-spacing:.06em;font-family:var(--font-en);transition:color .15s}
+.footer-link:hover{color:var(--black)}
+
+@media(max-width:640px){
+  .dimensions{grid-template-columns:repeat(3,1fr)}
+  .result-top{grid-template-columns:1fr;gap:32px}
+  .cta-points{grid-template-columns:1fr}
+  .bd-row{grid-template-columns:80px 1fr 44px;gap:10px}
+  .result-score-big{font-size:52px}
+}
+@media(max-width:440px){
+  .dimensions{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <a href="https://kmatsuura-beep.github.io/index/" class="logo">BEEP <span>/</span> Wellness</a>
+    <span class="header-label">Engineer Wellnes5 Check</span>
+  </div>
+</header>
+
+<div class="page-wrap">
+
+  <section class="hero">
+    <p class="hero-kicker">Wellnes5 Diagnostic</p>
+    <h1>エンジニアのための<br><strong>Wellnes5 詳細診断</strong></h1>
+    <p class="hero-sub">15の設問で、あなたの心身・職場環境を5軸から深く可視化します。身体・精神・社会的つながり・作業環境・キャリア成長の現状を把握し、具体的な改善アクションに繋げます。</p>
+    <div class="hero-meta">
+      <div class="meta-item"><span class="meta-num">15</span><span class="meta-label">Questions</span></div>
+      <div class="meta-item"><span class="meta-num">5</span><span class="meta-label">Dimensions</span></div>
+      <div class="meta-item"><span class="meta-num">3</span><span class="meta-label">min</span></div>
+    </div>
+  </section>
+
+  <div>
+    <div class="progress-track"><div class="progress-fill" id="prog"></div></div>
+    <div class="progress-label">
+      <span class="prog-text" id="prog-text">0 / 15 Questions</span>
+      <span class="prog-text" id="prog-pct">0%</span>
+    </div>
+  </div>
+
+  <main class="main">
+
+    <!-- START -->
+    <div id="screen-start" class="step active">
+      <p class="section-eyebrow">5 Dimensions</p>
+      <div class="dimensions">
+        <div class="dim-item">
+          <p class="dim-num">01</p>
+          <p class="dim-name-en">Body</p>
+          <p class="dim-name-jp">身体的健康</p>
+          <p class="dim-qs">3 questions</p>
+        </div>
+        <div class="dim-item">
+          <p class="dim-num">02</p>
+          <p class="dim-name-en">Mind</p>
+          <p class="dim-name-jp">精神的健康</p>
+          <p class="dim-qs">3 questions</p>
+        </div>
+        <div class="dim-item">
+          <p class="dim-num">03</p>
+          <p class="dim-name-en">Social</p>
+          <p class="dim-name-jp">社会的つながり</p>
+          <p class="dim-qs">3 questions</p>
+        </div>
+        <div class="dim-item">
+          <p class="dim-num">04</p>
+          <p class="dim-name-en">Workspace</p>
+          <p class="dim-name-jp">作業環境</p>
+          <p class="dim-qs">3 questions</p>
+        </div>
+        <div class="dim-item">
+          <p class="dim-num">05</p>
+          <p class="dim-name-en">Growth</p>
+          <p class="dim-name-jp">キャリア成長</p>
+          <p class="dim-qs">3 questions</p>
+        </div>
+      </div>
+      <p class="start-note">各設問に「よくあてはまる」「ややあてはまる」「あまりあてはまらない」「あてはまらない」の4択で回答してください。正直に答えることで、より正確な状態把握につながります。所要時間は約3分です。</p>
+      <button class="btn-start" onclick="startQuiz()">診断をはじめる <span class="arrow">→</span></button>
+    </div>
+
+    <!-- QUESTION -->
+    <div id="screen-q" class="step">
+      <p class="q-counter" id="q-counter">QUESTION 1 / 15</p>
+      <div class="q-header">
+        <span class="q-axis-tag" id="q-axis-tag">Body</span>
+        <p class="q-text" id="q-text"></p>
+        <p class="q-note" id="q-note"></p>
+      </div>
+      <div class="choices" id="choices"></div>
+      <div class="q-nav">
+        <button class="btn-back" id="btn-back" onclick="goBack()">← 前の質問</button>
+        <button class="btn-next" id="btn-next" onclick="goNext()" disabled>
+          <span id="btn-next-label">次の質問</span> →
+        </button>
+      </div>
+    </div>
+
+    <!-- RESULT -->
+    <div id="screen-result" class="step">
+
+      <div class="result-top">
+        <div class="result-left">
+          <p class="result-tier-kicker">Total Score</p>
+          <div class="result-score-wrap">
+            <span class="result-score-big" id="r-score-big">0</span>
+            <span class="result-score-denom">/ 60</span>
+          </div>
+          <p class="result-status" id="r-status"></p>
+          <p class="result-title" id="r-title"></p>
+          <p class="result-desc" id="r-desc"></p>
+        </div>
+        <div class="radar-wrap">
+          <p class="radar-title">Wellness Radar</p>
+          <canvas id="radarCanvas" width="280" height="280"></canvas>
+        </div>
+      </div>
+
+      <div class="breakdown-section">
+        <p class="section-label">Score by Dimension</p>
+        <div class="breakdown" id="breakdown"></div>
+      </div>
+
+      <div class="q-breakdown">
+        <p class="section-label">Question Detail</p>
+        <div id="q-detail"></div>
+      </div>
+
+      <div class="advice-block">
+        <p class="advice-kicker">Key Insight</p>
+        <p class="advice-text" id="r-advice"></p>
+      </div>
+
+      <div class="cta-block">
+        <p class="cta-eyebrow">For Engineers</p>
+        <h2 class="cta-heading">あなたのスキルを、<strong>正当に評価してくれる環境</strong>へ。</h2>
+        <p class="cta-body">Wellnes5の結果が示すとおり、エンジニアのパフォーマンスは技術力だけでなく、働く環境・チーム・キャリアビジョンに大きく左右されます。エンジニアのミカタでは、あなたのスキルと志向に合った案件・環境を一緒に探します。</p>
+        <div class="cta-points">
+          <div class="cta-point">
+            <p class="cta-point-label">Environment</p>
+            <p class="cta-point-text">フルリモート・高単価など、Wellnes5スコアに応じた環境を提案。</p>
+          </div>
+          <div class="cta-point">
+            <p class="cta-point-label">Career</p>
+            <p class="cta-point-text">技術成長とモチベーションを両立できる案件を厳選してご紹介。</p>
+          </div>
+          <div class="cta-point">
+            <p class="cta-point-label">Support</p>
+            <p class="cta-point-text">担当エージェントが常時サポート。職場環境の悩みも相談可能。</p>
+          </div>
+          <div class="cta-point">
+            <p class="cta-point-label">Speed</p>
+            <p class="cta-point-text">最短1週間でのアサイン実績。スピード重視で動きます。</p>
+          </div>
+        </div>
+        <a href="https://kmatsuura-beep.github.io/index/" class="btn-cta">株式会社ウェルネステックに相談する →</a>
+        <p class="btn-cta-sub">まずは話を聞くだけでもOKです。</p>
+      </div>
+
+      <button class="btn-retry" onclick="resetQuiz()">← 診断をやり直す</button>
+
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  <div class="inner">
+    <span class="footer-copy">© 株式会社ウェルネステック</span>
+    <a href="https://kmatsuura-beep.github.io/index/" class="footer-link">beep-wellness.jp →</a>
+  </div>
+</footer>
+
+<script>
+// ──────────────────────────────────────────────
+//  QUESTIONS  (15問 × 4択: 4=よくあてはまる → 1=あてはまらない)
+//  ※「あてはまるほど問題あり」設計 → スコアを反転して集計
+//  低スコアが出やすい設問・言い回しに統一
+// ──────────────────────────────────────────────
+const AXES = ['Body','Mind','Social','Workspace','Growth'];
+const AXES_JP = ['身体的健康','精神的健康','社会的つながり','作業環境','キャリア成長'];
+
+const QS = [
+  // Body
+  { axis:0, text:'肩・首・腰の痛みや張りを、週に3日以上感じている。', note:'長時間の同一姿勢が身体に与える影響を確認します。' },
+  { axis:0, text:'睡眠の質が低い、または慢性的な寝不足が続いている。', note:'ブルーライト・深夜残業・思考の停止困難が睡眠を妨げていないか確認します。' },
+  { axis:0, text:'日中、眼精疲労や頭痛、倦怠感を感じることが多い。', note:'モニターの長時間視認や室内環境が身体的疲労を引き起こしていないか確認します。' },
+  // Mind
+  { axis:1, text:'突然の仕様変更や謎のバグに、強いイライラや焦りを覚える。', note:'精神的なバッファが消耗していないか確認します。' },
+  { axis:1, text:'「仕事をしていても楽しくない」「やる気が出ない」と感じる日が増えた。', note:'バーンアウト（燃え尽き症候群）の初期兆候を確認します。' },
+  { axis:1, text:'休日でも仕事のことが頭から離れず、しっかり休めていない。', note:'オフの時間に精神的余白が生まれているか確認します。' },
+  // Social
+  { axis:2, text:'業務上の連絡（Slack・メール）以外の雑談や対話が、ほぼない。', note:'チームの心理的安全性と孤立リスクを確認します。' },
+  { axis:2, text:'困ったときに気軽に相談できる同僚や上司がいない、または少ない。', note:'サポートネットワークの有無を確認します。' },
+  { axis:2, text:'自分のコードや成果物に対して、ポジティブなフィードバックをほとんどもらえない。', note:'承認欲求の充足と自己肯定感への影響を確認します。' },
+  // Workspace
+  { axis:3, text:'自分のデスク・椅子・機材のスペックに不満があり、集中の妨げになっている。', note:'物理的な作業環境が生産性に与えるインパクトを確認します。' },
+  { axis:3, text:'作業中、騒音・人の往来・温度などの環境要因に集中を乱されることが多い。', note:'集中状態（フロー）を妨害する外部要因を確認します。' },
+  { axis:3, text:'現在の職場環境（在宅・オフィス問わず）に、全体的に不満を感じている。', note:'環境満足度の総合評価を確認します。' },
+  // Growth
+  { axis:4, text:'日々の業務に追われ、新しい技術を学ぶ時間が全く取れていない。', note:'技術的レガシー化と成長機会の喪失を確認します。' },
+  { axis:4, text:'現在の案件・職場では、自分のキャリアビジョンに近づいている実感が持てない。', note:'キャリア方向性とのミスアラインメントを確認します。' },
+  { axis:4, text:'「このままでいいのか」という漠然とした不安や閉塞感を感じることがある。', note:'中長期的なモチベーションとエンゲージメントを確認します。' }
+];
+
+const OPTS = [
+  { label:'よくあてはまる',    score:1 },   // 問題あり → 低スコア
+  { label:'ややあてはまる',   score:2 },
+  { label:'あまりあてはまらない', score:3 },
+  { label:'あてはまらない',   score:4 }
+];
+
+let cur = 0, answers = new Array(15).fill(undefined);
+
+// ── Navigation ──────────────────────────────
+function startQuiz() { hide('screen-start'); show('screen-q'); renderQ(0); }
+
+function renderQ(idx) {
+  cur = idx;
+  const q = QS[idx];
+  const pct = (idx / 15) * 100;
+  document.getElementById('prog').style.width = pct + '%';
+  document.getElementById('prog-text').textContent = idx + ' / 15 Questions';
+  document.getElementById('prog-pct').textContent = Math.round(pct) + '%';
+  document.getElementById('q-counter').textContent = 'QUESTION ' + (idx+1) + ' / 15';
+  document.getElementById('q-axis-tag').textContent = AXES[q.axis] + ' — ' + AXES_JP[q.axis];
+  document.getElementById('q-text').textContent = q.text;
+  document.getElementById('q-note').textContent = q.note;
+  document.getElementById('btn-back').style.visibility = idx === 0 ? 'hidden' : 'visible';
+  document.getElementById('btn-next-label').textContent = idx === 14 ? '結果を見る' : '次の質問';
+  document.getElementById('btn-next').disabled = answers[idx] === undefined;
+
+  const div = document.getElementById('choices');
+  div.innerHTML = '';
+  OPTS.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'choice' + (answers[idx] === o.score ? ' selected' : '');
+    btn.innerHTML =
+      '<span class="choice-dot"></span>' +
+      '<span class="choice-text">' + o.label + '</span>' +
+      '<span class="choice-pt">' + o.score + ' pt</span>';
+    btn.onclick = () => {
+      answers[idx] = o.score;
+      div.querySelectorAll('.choice').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('btn-next').disabled = false;
+    };
+    div.appendChild(btn);
+  });
+}
+
+function goNext() {
+  if (answers[cur] === undefined) return;
+  if (cur < 14) renderQ(cur + 1);
+  else showResult();
+}
+function goBack() { if (cur > 0) renderQ(cur - 1); }
+
+// ── Result ──────────────────────────────────
+function showResult() {
+  document.getElementById('prog').style.width = '100%';
+  document.getElementById('prog-text').textContent = '15 / 15 Questions';
+  document.getElementById('prog-pct').textContent = '100%';
+  hide('screen-q'); show('screen-result');
+
+  const total = answers.reduce((a, b) => a + b, 0); // max 60
+
+  // Axis scores (3 qs each, max 12)
+  const axisScores = AXES.map((_, ai) => {
+    const qs = answers.filter((_, qi) => QS[qi].axis === ai);
+    return qs.reduce((a, b) => a + b, 0);
+  });
+
+  // Tier
+  let tc, ts, title, desc;
+  const pct = total / 60 * 100;
+  if (pct >= 75) {
+    tc='green'; ts='Green — 良好な状態';
+    title='5つの軸のバランスが取れており、概ね健全なウェルネス状態です。';
+    desc='現在の良好な環境を維持しながら、さらなる成長機会を積極的に探ることを推奨します。スコアが低い軸は、予防的なアプローチで早期にケアしましょう。';
+  } else if (pct >= 50) {
+    tc='yellow'; ts='Yellow — 一部に負荷の兆候';
+    title='複数の軸で、疲弊・環境上の課題が蓄積しつつあります。';
+    desc='放置するとバーンアウトや生産性の低下につながります。スコアの低い軸を中心に、環境・習慣・職場の見直しを検討する時期です。';
+  } else {
+    tc='red'; ts='Red — 要改善アラート';
+    title='心身・環境・キャリアの複数軸で、深刻な負荷が生じています。';
+    desc='このまま継続すると、パフォーマンスの著しい低下や精神的な消耗が避けられません。環境そのものを変えることが最も効果的な解決策である可能性が高い状態です。';
+  }
+
+  document.getElementById('r-score-big').textContent = total;
+  document.getElementById('r-score-big').className = 'result-score-big ' + tc;
+  document.getElementById('r-status').textContent = ts;
+  document.getElementById('r-status').className = 'result-status ' + tc;
+  document.getElementById('r-title').textContent = title;
+  document.getElementById('r-desc').textContent = desc;
+
+  // Breakdown bars
+  const minAxis = axisScores.indexOf(Math.min(...axisScores));
+  const bd = document.getElementById('breakdown');
+  bd.innerHTML = '';
+  AXES.forEach((name, i) => {
+    const sc = axisScores[i];
+    const barPct = Math.round((sc / 12) * 100);
+    const cls = sc <= 5 ? 'low' : sc <= 8 ? 'mid' : 'ok';
+    const barColor = cls === 'low' ? '#8b2020' : cls === 'mid' ? '#a07000' : '#1a7a5e';
+    const row = document.createElement('div');
+    row.className = 'bd-row';
+    row.innerHTML =
+      '<span class="bd-axis">' + name + '</span>' +
+      '<div class="bd-bar-bg"><div class="bd-bar-fill" style="width:0%;background:' + barColor + '" data-pct="' + barPct + '"></div></div>' +
+      '<span class="bd-score-text ' + cls + '">' + sc + ' / 12</span>';
+    bd.appendChild(row);
+  });
+  setTimeout(() => {
+    document.querySelectorAll('.bd-bar-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 80);
+
+  // Question detail
+  const qd = document.getElementById('q-detail');
+  qd.innerHTML = '';
+  AXES.forEach((name, ai) => {
+    const block = document.createElement('div');
+    block.className = 'qb-axis-block';
+    const axSc = axisScores[ai];
+    block.innerHTML = '<div class="qb-axis-header"><span class="qb-axis-name">' + name + ' — ' + AXES_JP[ai] + '</span><span class="qb-axis-score">' + axSc + ' / 12</span></div>';
+    QS.forEach((q, qi) => {
+      if (q.axis !== ai) return;
+      const sc = answers[qi];
+      const ansLabel = OPTS.find(o => o.score === sc).label;
+      const cls = sc === 1 ? 's1' : sc === 2 ? 's2' : 's3';
+      const row = document.createElement('div');
+      row.className = 'qb-q-row';
+      row.innerHTML = '<span class="qb-q-text">' + q.text + '</span><span class="qb-q-ans ' + cls + '">' + ansLabel + '</span>';
+      block.appendChild(row);
+    });
+    qd.appendChild(block);
+  });
+
+  // Advice
+  const lowName = AXES_JP[minAxis];
+  const lowEn = AXES[minAxis];
+  document.getElementById('r-advice').textContent =
+    '最もスコアが低い軸は「' + lowEn + '（' + lowName + '）」（' + axisScores[minAxis] + '/12点）です。' +
+    'この軸の課題が現在のパフォーマンスを最も強く阻害している可能性があります。' +
+    '単なる個人の習慣改善にとどまらず、案件・職場環境そのものを見直すことが抜本的な解決につながる場合があります。' +
+    'エンジニアのミカタでは、あなたのWellnes5スコアをもとに、最適な就業環境のご提案が可能です。';
+
+  // Radar
+  setTimeout(() => drawRadar(axisScores), 150);
+}
+
+// ── Radar Chart ─────────────────────────────
+function drawRadar(scores) {
+  const canvas = document.getElementById('radarCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const cx = W / 2, cy = H / 2;
+  const R = 100;
+  const N = 5;
+  ctx.clearRect(0, 0, W, H);
+
+  // Labels positions (pentagon, top = Body, clockwise)
+  const angles = Array.from({length: N}, (_, i) => -Math.PI/2 + (2*Math.PI/N)*i);
+  const labels = ['Body','Mind','Social','Workspace','Growth'];
+
+  // Grid rings
+  [1, 0.75, 0.5, 0.25].forEach(ratio => {
+    ctx.beginPath();
+    angles.forEach((a, i) => {
+      const x = cx + R * ratio * Math.cos(a);
+      const y = cy + R * ratio * Math.sin(a);
+      i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+    });
+    ctx.closePath();
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Spokes
+  angles.forEach(a => {
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(cx + R * Math.cos(a), cy + R * Math.sin(a));
+    ctx.strokeStyle = '#e8e8e8';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  });
+
+  // Data polygon (scores: max 12 per axis)
+  const normalized = scores.map(s => s / 12);
+  ctx.beginPath();
+  angles.forEach((a, i) => {
+    const r = R * normalized[i];
+    const x = cx + r * Math.cos(a);
+    const y = cy + r * Math.sin(a);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.closePath();
+  ctx.fillStyle = 'rgba(26,122,94,0.12)';
+  ctx.fill();
+  ctx.strokeStyle = '#1a7a5e';
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  // Data points
+  angles.forEach((a, i) => {
+    const r = R * normalized[i];
+    const x = cx + r * Math.cos(a);
+    const y = cy + r * Math.sin(a);
+    ctx.beginPath();
+    ctx.arc(x, y, 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = '#1a7a5e';
+    ctx.fill();
+  });
+
+  // Labels
+  ctx.font = '500 11px "DM Sans", sans-serif';
+  ctx.fillStyle = '#0e0e0e';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  const labelR = R + 22;
+  angles.forEach((a, i) => {
+    const x = cx + labelR * Math.cos(a);
+    let y = cy + labelR * Math.sin(a);
+    // score sub-label
+    ctx.font = '500 11px "DM Sans", sans-serif';
+    ctx.fillStyle = '#0e0e0e';
+    ctx.fillText(labels[i], x, y - 6);
+    ctx.font = '300 10px "DM Sans", sans-serif';
+    ctx.fillStyle = '#888';
+    ctx.fillText(scores[i] + '/12', x, y + 7);
+  });
+}
+
+// ── Utils ────────────────────────────────────
+function show(id) {
+  const el = document.getElementById(id);
+  el.style.display = '';
+  requestAnimationFrame(() => el.classList.add('active'));
+}
+function hide(id) {
+  const el = document.getElementById(id);
+  el.classList.remove('active');
+  el.style.display = 'none';
+}
+
+function resetQuiz() {
+  answers = new Array(15).fill(undefined);
+  cur = 0;
+  document.getElementById('prog').style.width = '0%';
+  document.getElementById('prog-text').textContent = '0 / 15 Questions';
+  document.getElementById('prog-pct').textContent = '0%';
+  hide('screen-result');
+  show('screen-start');
+}
+</script>
+</body>
+</html>
